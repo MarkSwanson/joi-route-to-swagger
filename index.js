@@ -35,12 +35,12 @@ const DOC_ROOT_TEMPLATE = {
         'message'
       ],
       properties: {
+        data: {
+          type: 'object'
+        },
         message: {
           type: 'string'
         },
-        data: {
-          type: 'object'
-        }
       }
     }
   }
@@ -156,17 +156,25 @@ function addRequestPathParams(route, pathParams) {
 }
 
 function addResponseExample(routeDef, route) {
-  _.forEach(routeDef.responseExamples, (example) => {
-    route.responses[example.code] = {
-      description: example.description || 'Normal Response',
-      schema: {
-        $ref: '#/definitions/NormalResponse'
-      },
-      examples: {
-        'application/json': example.data
-      }
-    };
-  });
+    _.forEach(routeDef.responseExamples, (example) => {
+        route.responses[example.code] = {
+            description: example.description || 'Normal Response',
+            examples: {
+                'application/json': example.data
+            }
+        };
+        console.log("example.code:" + example.code);
+        if (example.code >= 500) {
+            route.responses[example.code].schema = {
+                $ref: '#/definitions/Error'
+            }
+        }
+        else {
+            route.responses[example.code].schema = {
+                $ref: '#/definitions/NormalResponse'
+            }
+        }
+    });
 }
 
 function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
