@@ -20,13 +20,9 @@ const DOC_ROOT_TEMPLATE = {
     NormalResponse: {
       type: 'object',
       required: [
-        'err',
         'data'
       ],
       properties: {
-        err: {
-          type: 'null'
-        },
         data: {
           type: 'object'
         }
@@ -35,15 +31,15 @@ const DOC_ROOT_TEMPLATE = {
     Error: {
       type: 'object',
       required: [
-        'err',
-        'data'
+        'data',
+        'message'
       ],
       properties: {
-        err: {
+        message: {
           type: 'string'
         },
         data: {
-          type: 'null'
+          type: 'object'
         }
       }
     }
