@@ -157,11 +157,12 @@ function addRequestPathParams(route, pathParams) {
 
 function addResponseExample(routeDef, route) {
     _.forEach(routeDef.responseExamples, (example) => {
+        var content_type = example.content_type || 'application/json';
+        var example_obj = {};
+        example_obj[content_type] = example.data;
         route.responses[example.code] = {
             description: example.description || 'Normal Response',
-            examples: {
-                'application/json': example.data
-            }
+            examples: example_obj,
         };
         console.log("example.code:" + example.code);
         if (example.code >= 500) {
@@ -202,6 +203,9 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
   const swaggerReq = _.cloneDeep(ROUTE_DEF_TEMPLATE);
   swaggerReq.tags.push(moduleId);
   swaggerReq.summary = routeDef.summary;
+  if (routeDef.produces) {
+    swaggerReq.produces = routeDef.produces;
+  }
   swaggerReq.description = routeDef.description;
   swaggerReq.operationId = actionName;
 
