@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kenspirit/joi-route-to-swagger.git"
+    "url": "git+https://github.com/MarkSwanson/joi-route-to-swagger.git"
   },
   "keywords": [
     "joi",
