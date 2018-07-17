@@ -90,6 +90,31 @@ function addRequestQueryParams(route, validators) {
   }
 }
 
+function addRequestHeaders(route, validators) {
+    if (validators && validators.headers) {
+        const headers = joi2json(validators.headers);
+        _.forEach(headers.properties, (value, field) => {
+            let description = value.description ? value.description : '';
+            const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
+            if (example) {
+                description += ` Example: ${example}`;
+            }
+
+            // example is removed because it's not supported in swagger v2 schema
+            route.parameters.push({
+                name: field,
+                in: 'header',
+                description,
+                required: (headers.required || []).indexOf(field) > -1,
+                type: value.type,
+                maximum: value.maximum,
+                default: value.default,
+                enum: value.enum
+            });
+        });
+    }
+}
+
 function buildEntityDefinition(docEntity, entityName, entityDef) {
   const entity = {
     type: 'object',
@@ -215,6 +240,7 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
 
   const validators = routeDef.validators;
   addRequestQueryParams(swaggerReq, validators);
+  addRequestHeaders(swaggerReq, validators);
   addRequestBodyParams(docEntity, swaggerReq, validators, actionName);
 
   addResponseExample(routeDef, swaggerReq);
